@@ -1,15 +1,30 @@
 {
   "functions": {
-    "api/sync-store.mjs": { "maxDuration": 240 }
+    "api/sync-store.mjs": {
+      "maxDuration": 70
+    },
+    "api/sync-price-batch.mjs": {
+      "maxDuration": 45
+    }
   },
   "headers": [
     {
       "source": "/manifest.webmanifest",
-      "headers": [{ "key": "Content-Type", "value": "application/manifest+json; charset=utf-8" }]
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json; charset=utf-8"
+        }
+      ]
     },
     {
       "source": "/api/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
     }
   ]
 }

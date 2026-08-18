@@ -1,43 +1,28 @@
 # Catálogo Nu Skin Argentina
 
-PWA instalable con catálogo de la tienda **Nu Skin Argentina**, favoritos, Mis Kits, envío único de $8.100 para kits personalizados y simulación de tarjeta.
+PWA de consulta rápida basada en la tienda oficial de Nu Skin Argentina.
 
-## Fuente de catálogo y precios
+## Funciones
 
-El botón **Actualizar precios** llama a `/api/sync-store`.
+- Catálogo Nu Skin Argentina.
+- Favoritos guardados en el dispositivo.
+- Mis Kits: combina productos, suma precios, agrega el envío una sola vez y simula 3/6/12 cuotas.
+- Envío configurado: $8.100.
+- Recargos configurados: 3 cuotas +7,4%, 6 cuotas +14,6%, 12 cuotas +32,7%.
+- PWA instalable.
+- Actualización manual mediante el botón **Actualizar precios**.
 
-La función abre con un navegador Chromium la tienda oficial `https://www.nuskin.com/ar/es/`, descubre sus páginas actuales de catálogo/producto y lee los productos y precios que la tienda muestra para Argentina. Esto es necesario porque el storefront carga parte del contenido con JavaScript.
+## Sincronización de tienda y precios
 
-Al sincronizar:
+La versión v3 divide el proceso para evitar timeouts largos en Vercel:
 
-- el catálogo de la app se reemplaza por los productos encontrados en la tienda AR;
-- se incorporan productos nuevos y dejan de mostrarse los que ya no aparecen en esa tienda;
-- los precios encontrados se guardan como precios oficiales verificados;
-- favoritos y Mis Kits se conservan cuando el producto mantiene el mismo SKU/nombre;
-- si Nu Skin no expone un precio durante la lectura, la app no inventa un valor.
+1. `api/sync-store.mjs` lee el catálogo de `https://www.nuskin.com/ar/es/` y su catálogo de productos.
+2. `api/sync-price-batch.mjs` consulta los productos sin precio en lotes pequeños.
+3. La interfaz muestra progreso (`Verificando precios X/Y`) y cancela una solicitud si supera el tiempo máximo previsto.
+4. Un precio viejo puede seguir visible como referencia, pero solo figura como **Verificado en Nu Skin** si fue confirmado en la sincronización actual.
 
-La app también intenta una sincronización automática si la última lectura tiene más de 24 horas.
+La sincronización completa se ejecuta únicamente cuando el usuario toca **Actualizar precios**. No se dispara automáticamente al abrir la aplicación.
 
-## Simulador
+## Deploy
 
-- Envío: $8.100.
-- 3 cuotas: +7,4%.
-- 6 cuotas: +14,6%.
-- 12 cuotas: +32,7%.
-- En **Mis Kits**, el envío se suma una sola vez al conjunto completo.
-
-## Ejecutar localmente
-
-No abras `index.html` con `file://` para probar la sincronización, porque la función de servidor no existe en ese modo.
-
-Con Vercel CLI:
-
-```bash
-npx vercel dev
-```
-
-También podés usar `iniciar-local.bat` en Windows o `./iniciar-local.sh` en macOS/Linux.
-
-## Git / Vercel
-
-El contenido de esta carpeta se sube descomprimido a la raíz del repositorio. Vercel instalará `puppeteer-core` y `@sparticuz/chromium` y detectará `api/sync-store.mjs`.
+Proyecto listo para GitHub + Vercel. Vercel detecta los endpoints de `api/` y sirve el resto como sitio estático.

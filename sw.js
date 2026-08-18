@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nuskin-catalogo-pwa-v3-ar-store';
+const CACHE_NAME = 'nuskin-catalogo-pwa-v4-batched-sync';
 const CORE_ASSETS = [
   './',
   './index.html',

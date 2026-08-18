@@ -1,15 +1,22 @@
 # Catálogo Nu Skin Argentina
 
-PWA instalable con catálogo, favoritos, Mis Kits, envío único de $8.100 para kits personalizados, simulación de tarjeta y verificación de precios contra Nu Skin Argentina.
+PWA instalable con catálogo de la tienda **Nu Skin Argentina**, favoritos, Mis Kits, envío único de $8.100 para kits personalizados y simulación de tarjeta.
 
-## Precios
+## Fuente de catálogo y precios
 
-- El botón **Actualizar precios** llama a `/api/sync-prices`.
-- La función consulta páginas oficiales de Nu Skin Argentina y solo guarda precios que puede identificar como valores en ARS.
-- La actualización se hace por SKU en lotes pequeños.
-- Si un SKU no puede verificarse, conserva el último precio disponible o queda pendiente; no se reemplaza por cero.
-- Los precios verificados se guardan en `localStorage` del dispositivo.
-- Se mantiene la edición manual como respaldo. Una sincronización posterior reemplaza una corrección manual solo cuando logra verificar oficialmente ese SKU.
+El botón **Actualizar precios** llama a `/api/sync-store`.
+
+La función abre con un navegador Chromium la tienda oficial `https://www.nuskin.com/ar/es/`, descubre sus páginas actuales de catálogo/producto y lee los productos y precios que la tienda muestra para Argentina. Esto es necesario porque el storefront carga parte del contenido con JavaScript.
+
+Al sincronizar:
+
+- el catálogo de la app se reemplaza por los productos encontrados en la tienda AR;
+- se incorporan productos nuevos y dejan de mostrarse los que ya no aparecen en esa tienda;
+- los precios encontrados se guardan como precios oficiales verificados;
+- favoritos y Mis Kits se conservan cuando el producto mantiene el mismo SKU/nombre;
+- si Nu Skin no expone un precio durante la lectura, la app no inventa un valor.
+
+La app también intenta una sincronización automática si la última lectura tiene más de 24 horas.
 
 ## Simulador
 
@@ -19,9 +26,9 @@ PWA instalable con catálogo, favoritos, Mis Kits, envío único de $8.100 para 
 - 12 cuotas: +32,7%.
 - En **Mis Kits**, el envío se suma una sola vez al conjunto completo.
 
-## Ejecutar localmente con la API
+## Ejecutar localmente
 
-La consulta de precios necesita un servidor (no funciona abriendo `index.html` con `file://`).
+No abras `index.html` con `file://` para probar la sincronización, porque la función de servidor no existe en ese modo.
 
 Con Vercel CLI:
 
@@ -29,8 +36,8 @@ Con Vercel CLI:
 npx vercel dev
 ```
 
-Luego abrir la URL local indicada por Vercel.
+También podés usar `iniciar-local.bat` en Windows o `./iniciar-local.sh` en macOS/Linux.
 
 ## Git / Vercel
 
-El repositorio está listo para subir directamente. Vercel sirve el sitio estático y detecta la función `api/sync-prices.js`.
+El contenido de esta carpeta se sube descomprimido a la raíz del repositorio. Vercel instalará `puppeteer-core` y `@sparticuz/chromium` y detectará `api/sync-store.mjs`.

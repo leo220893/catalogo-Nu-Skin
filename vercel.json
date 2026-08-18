@@ -1,11 +1,15 @@
 {
   "functions": {
-    "api/sync-prices.js": { "maxDuration": 10 }
+    "api/sync-store.mjs": { "maxDuration": 240 }
   },
   "headers": [
     {
       "source": "/manifest.webmanifest",
       "headers": [{ "key": "Content-Type", "value": "application/manifest+json; charset=utf-8" }]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
     }
   ]
 }
